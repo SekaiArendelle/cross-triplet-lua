@@ -22,8 +22,19 @@ local function test_x86_64_pc_linux_gnu_2()
 end
 
 local function test_invalid_triplet_1()
-    local has_value, value = pcall(function()Triplet:new("x86_64-pc-linux")end)
+    local has_value, value =
+        pcall(function() Triplet:new("x86_64-pc-linux") end)
     assert(has_value == false, "Should throw error")
+end
+
+local function test_x86_64_windows_gnu_1()
+    local triplet = Triplet:new("x86_64-w64-mingw32")
+    assert(triplet:get_arch() == "x86_64", "Arch should be x86_64")
+    assert(triplet:get_vendor() == "w64", "Vendor should be w64")
+    assert(triplet:get_platform() == "windows", "Platform should be windows")
+    assert(triplet:get_abi() == "gnu", "ABI should be gnu")
+    assert(triplet:to_string() == "x86_64-w64-windows-gnu",
+           "Triplet string should be x86_64-w64-windows-gnu")
 end
 
 --- Main demonstration function
@@ -31,6 +42,7 @@ local function main()
     test_x86_64_pc_linux_gnu_1()
     test_x86_64_pc_linux_gnu_2()
     test_invalid_triplet_1()
+    test_x86_64_windows_gnu_1()
 end
 
 -- Run the demonstration
