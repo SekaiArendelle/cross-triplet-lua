@@ -35,15 +35,23 @@ function Triplet:new(triplet_str)
     -- 3 parts: arch-platform-abi (vendor defaults to "unknown")
     -- 4 parts: arch-vendor-platform-abi
     if #parts == 3 then
+        -- For 3 parts, we expect arch-platform-abi format
+        -- If the second part looks like a vendor (e.g., "pc", "apple"), it's invalid
+        local second_part = parts[2]:lower()
+        if second_part == "pc" or second_part == "apple" or second_part == "unknown" then
+            error("Invalid triplet format: " .. triplet_str .. " (missing vendor or invalid format)")
+        end
         instance.arch = parts[1]
         instance.vendor = "unknown"
         instance.platform = parts[2]
         instance.abi = parts[3]
-    else -- #parts == 4
+    elseif #parts == 4 then
         instance.arch = parts[1]
         instance.vendor = parts[2]
         instance.platform = parts[3]
         instance.abi = parts[4]
+    else
+        error("Invalid triplet format: " .. triplet_str)
     end
 
     return instance

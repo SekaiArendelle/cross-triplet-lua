@@ -21,10 +21,16 @@ local function test_x86_64_pc_linux_gnu_2()
            "Triplet string should be x86_64-unknown-linux-gnu")
 end
 
+local function test_invalid_triplet_1()
+    local has_value, value = pcall(function()Triplet:new("x86_64-pc-linux")end)
+    assert(has_value == false, "Should throw error")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu_1()
     test_x86_64_pc_linux_gnu_2()
+    test_invalid_triplet_1()
 end
 
 -- Run the demonstration
