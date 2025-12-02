@@ -31,10 +31,20 @@ function Triplet:new(triplet_str)
         error("Invalid triplet format: " .. triplet_str)
     end
 
-    instance.arch = parts[1]
-    instance.vendor = parts[2]
-    instance.platform = parts[3]
-    if #parts == 4 then instance.abi = parts[4] end
+    -- Handle different triplet formats:
+    -- 3 parts: arch-platform-abi (vendor defaults to "unknown")
+    -- 4 parts: arch-vendor-platform-abi
+    if #parts == 3 then
+        instance.arch = parts[1]
+        instance.vendor = "unknown"
+        instance.platform = parts[2]
+        instance.abi = parts[3]
+    else -- #parts == 4
+        instance.arch = parts[1]
+        instance.vendor = parts[2]
+        instance.platform = parts[3]
+        instance.abi = parts[4]
+    end
 
     return instance
 end
