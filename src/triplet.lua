@@ -91,10 +91,34 @@ local KNOWN_TRIPLETS = {
         platform = "darwin",
         abi = nil
     },
+    ["aarch64-apple-darwin"] = {
+        arch = "aarch64",
+        vendor = "apple",
+        platform = "darwin",
+        abi = nil
+    },
+    ["arm64-apple-darwin"] = {
+        arch = "arm64",
+        vendor = "apple",
+        platform = "darwin",
+        abi = nil
+    },
     ["arm-apple-darwin"] = {
         arch = "arm",
         vendor = "apple",
         platform = "darwin",
+        abi = nil
+    },
+    ["aarch64-apple-darwin24"] = {
+        arch = "aarch64",
+        vendor = "apple",
+        platform = "darwin24",
+        abi = nil
+    },
+    ["arm64-apple-darwin24"] = {
+        arch = "arm64",
+        vendor = "apple",
+        platform = "darwin24",
         abi = nil
     },
     ["x86_64-apple-darwin24"] = {
