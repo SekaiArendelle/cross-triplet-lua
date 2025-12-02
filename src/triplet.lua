@@ -28,12 +28,35 @@ local KNOWN_TRIPLETS = {
         platform = "windows",
         abi = "gnu"
     },
-
+    ["i686-w64-mingw32"] = {
+        arch = "i686",
+        vendor = "w64",
+        platform = "windows",
+        abi = "gnu"
+    },
+    ["x86_64-pc-windows-gnu"] = {
+        arch = "x86_64",
+        vendor = "pc",
+        platform = "windows",
+        abi = "gnu"
+    },
     -- 3-part formats (missing vendor)
     ["x86_64-linux-gnu"] = {
         arch = "x86_64",
         vendor = "unknown",
         platform = "linux",
+        abi = "gnu"
+    },
+    ["x86_64-windows-gnu"] = {
+        arch = "x86_64",
+        vendor = "unknown",
+        platform = "windows",
+        abi = "gnu"
+    },
+    ["i686-windows-gnu"] = {
+        arch = "i686",
+        vendor = "unknown",
+        platform = "windows",
         abi = "gnu"
     },
     ["x86_64-linux-musl"] = {
@@ -73,14 +96,6 @@ local KNOWN_TRIPLETS = {
         vendor = "apple",
         platform = "darwin",
         abi = nil
-    },
-
-    -- Other common formats
-    ["i686-w64-mingw32"] = {
-        arch = "i686",
-        vendor = "w64",
-        platform = "windows",
-        abi = "gnu"
     },
     ["x86_64-apple-darwin24"] = {
         arch = "x86_64",
