@@ -13,12 +13,22 @@ Triplet.__index = Triplet -- This is crucial for method lookup
 Triplet.__name__ = "Triplet"
 
 -- Known ABI identifiers to help disambiguate 3-part triplets
-local KNOWN_ABIS = {gnu = true, musl = true, gnueabihf = true, msvc = true}
+local KNOWN_ABIS = {
+    gnu = true,
+    musl = true,
+    gnueabihf = true,
+    msvc = true,
+    android = true
+}
 
 -- Common vendor identifiers to reject when vendor is explicitly present
 -- but ABI is also present in a 3-part triplet (which should mean vendor
 -- was omitted, not provided).
 local KNOWN_VENDORS = {pc = true, w64 = true, apple = true, unknown = true}
+
+local function is_android_version_abi(part)
+    return part ~= nil and string.match(part, "^android%d+$") ~= nil
+end
 
 --- Create a new Triplet instance
 -- Parse triplet string and create corresponding Triplet object using lookup table
@@ -59,7 +69,7 @@ function Triplet:new(triplet_str)
                 platform = parts[3],
                 abi = nil
             }
-        elseif KNOWN_ABIS[parts[3]] then
+            elseif KNOWN_ABIS[parts[3]] or is_android_version_abi(parts[3]) then
             -- Only accept 3-part inputs with ABI when vendor is omitted
             if KNOWN_VENDORS[parts[2]] then
                 error("Unknown triplet format: " .. triplet_str)
@@ -122,6 +132,12 @@ function Triplet:get_abi() return self.abi end
 -- @treturn string Formatted triplet string
 function Triplet:to_string()
     local triplet_str = self.arch .. "-" .. self.vendor .. "-" .. self.platform
+    if self.abi then triplet_str = triplet_str .. "-" .. self.abi end
+    return triplet_str
+end
+
+function Triplet:to_string_without_vendor()
+    local triplet_str = self.arch .. "-" .. self.platform
     if self.abi then triplet_str = triplet_str .. "-" .. self.abi end
     return triplet_str
 end

@@ -92,6 +92,56 @@ local function test_invalid_triplet_2()
     assert(has_value == false, "Should throw error")
 end
 
+local function test_aarch64_linux_android()
+    local triplet = Triplet:new("aarch64-linux-android")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "android", "ABI should be android")
+    assert(triplet:to_string() == "aarch64-unknown-linux-android",
+           "Triplet string should be aarch64-unknown-linux-android")
+end
+
+local function test_aarch64_linux_android24()
+    local triplet = Triplet:new("aarch64-linux-android24")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "android24", "ABI should be android24")
+    assert(triplet:to_string() == "aarch64-unknown-linux-android24",
+           "Triplet string should be aarch64-unknown-linux-android24")
+end
+
+local function test_aarch64_linux_android30()
+    local triplet = Triplet:new("aarch64-linux-android30")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "android30", "ABI should be android30")
+    assert(triplet:to_string() == "aarch64-unknown-linux-android30",
+           "Triplet string should be aarch64-unknown-linux-android30")
+end
+
+local function test_x86_64_linux_android30()
+    local triplet = Triplet:new("x86_64-linux-android30")
+    assert(triplet:get_arch() == "x86_64", "Arch should be x86_64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "android30", "ABI should be android30")
+    assert(triplet:to_string() == "x86_64-unknown-linux-android30",
+           "Triplet string should be x86_64-unknown-linux-android30")
+end
+
+local function test_x86_64_linux_android()
+    local triplet = Triplet:new("x86_64-linux-android")
+    assert(triplet:get_arch() == "x86_64", "Arch should be x86_64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "android", "ABI should be android")
+    assert(triplet:to_string() == "x86_64-unknown-linux-android",
+           "Triplet string should be x86_64-unknown-linux-android")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu_1()
@@ -103,7 +153,12 @@ local function main()
     test_x86_64_windows_gnu_2()
     test_aarch64_apple_darwin24()
     test_aarch64_darwin24()
-    test_invalid_triplet_2();
+    test_invalid_triplet_2()
+    test_aarch64_linux_android()
+    test_aarch64_linux_android24()
+    test_aarch64_linux_android30()
+    test_x86_64_linux_android30()
+    test_x86_64_linux_android()
 end
 
 -- Run the demonstration
