@@ -87,6 +87,46 @@ local function test_aarch64_darwin24()
            "Triplet string should be aarch64-unknown-darwin24")
 end
 
+local function test_aarch64_apple_darwin()
+    local triplet = Triplet:new("aarch64-apple-darwin")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "apple", "Vendor should be apple")
+    assert(triplet:get_platform() == "darwin", "Platform should be darwin")
+    assert(triplet:get_abi() == nil, "ABI should be nil")
+    assert(triplet:to_string() == "aarch64-apple-darwin",
+           "Triplet string should be aarch64-apple-darwin")
+end
+
+local function test_aarch64_darwin()
+    local triplet = Triplet:new("aarch64-darwin")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "darwin", "Platform should be darwin")
+    assert(triplet:get_abi() == nil, "ABI should be nil")
+    assert(triplet:to_string() == "aarch64-unknown-darwin",
+           "Triplet string should be aarch64-unknown-darwin")
+end
+
+local function test_aarch64_unknown_darwin()
+    local triplet = Triplet:new("aarch64-unknown-darwin")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "darwin", "Platform should be darwin")
+    assert(triplet:get_abi() == nil, "ABI should be nil")
+    assert(triplet:to_string() == "aarch64-unknown-darwin",
+           "Triplet string should be aarch64-unknown-darwin")
+end
+
+local function test_aarch64_unknown_darwin24()
+    local triplet = Triplet:new("aarch64-unknown-darwin24")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "darwin24", "Platform should be darwin24")
+    assert(triplet:get_abi() == nil, "ABI should be nil")
+    assert(triplet:to_string() == "aarch64-unknown-darwin24",
+           "Triplet string should be aarch64-unknown-darwin24")
+end
+
 local function test_invalid_triplet_2()
     local has_value, value = pcall(function() Triplet:new("x86_64-pc-gnu") end)
     assert(has_value == false, "Should throw error")
@@ -153,6 +193,10 @@ local function main()
     test_x86_64_windows_gnu_2()
     test_aarch64_apple_darwin24()
     test_aarch64_darwin24()
+    test_aarch64_apple_darwin()
+    test_aarch64_darwin()
+    test_aarch64_unknown_darwin()
+    test_aarch64_unknown_darwin24()
     test_invalid_triplet_2()
     test_aarch64_linux_android()
     test_aarch64_linux_android24()

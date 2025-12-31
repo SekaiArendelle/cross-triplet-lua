@@ -26,8 +26,15 @@ local KNOWN_ABIS = {
 -- was omitted, not provided).
 local KNOWN_VENDORS = {pc = true, w64 = true, apple = true, unknown = true}
 
-local function is_android_version_abi(part)
-    return part ~= nil and string.match(part, "^android%d+$") ~= nil
+local function is_valid_abi(abi)
+    if KNOWN_ABIS[abi] then
+        return true
+    elseif abi ~= nil and string.match(abi, "^android%d+$") ~= nil then
+        -- android version ABI
+        return true
+    else
+        return false
+    end
 end
 
 --- Create a new Triplet instance
@@ -46,6 +53,7 @@ function Triplet:new(triplet_str)
         parts[#parts + 1] = part
     end
 
+    local pattern = nil
     if #parts == 4 then
         pattern = {
             arch = parts[1],
@@ -69,7 +77,7 @@ function Triplet:new(triplet_str)
                 platform = parts[3],
                 abi = nil
             }
-            elseif KNOWN_ABIS[parts[3]] or is_android_version_abi(parts[3]) then
+            elseif is_valid_abi(parts[3]) then
             -- Only accept 3-part inputs with ABI when vendor is omitted
             if KNOWN_VENDORS[parts[2]] then
                 error("Unknown triplet format: " .. triplet_str)
@@ -80,11 +88,11 @@ function Triplet:new(triplet_str)
                 platform = parts[2],
                 abi = parts[3]
             }
-        elseif KNOWN_VENDORS[parts[2]] then
-            -- Vendor explicitly present but ABI missing for a known vendor
-            error("Unknown triplet format: " .. triplet_str)
         else
-            -- Treat as explicit vendor + platform without ABI
+                -- Treat as explicit vendor + platform without ABI
+                if parts[2] == "pc" or parts[2] == "w64" then
+                    error("Unknown triplet format: " .. triplet_str)
+                end
             pattern = {
                 arch = parts[1],
                 vendor = parts[2],
@@ -102,6 +110,8 @@ function Triplet:new(triplet_str)
     else
         error("Unknown triplet format: " .. triplet_str)
     end
+
+    -- assume(pattern ~= nil)
 
     -- Copy the pattern data to instance
     instance.arch = pattern.arch
