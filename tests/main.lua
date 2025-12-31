@@ -396,6 +396,16 @@ local function test_wasm32_unknown_emscripten()
     assert_to_string_without_vendor(triplet, "wasm32-emscripten")
 end
 
+local function test_xmake_arch_x64_plat_windows()
+    local triplet = Triplet:from_xmake("x64", "windows")
+    assert_arch(triplet, "x86_64")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "x86_64-unknown-windows-msvc")
+    assert_to_string_without_vendor(triplet, "x86_64-windows-msvc")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu()
@@ -436,6 +446,7 @@ local function main()
     test_wasm32_unknown_wasip1()
     test_wasm32_emscripten()
     test_wasm32_unknown_emscripten()
+    test_xmake_arch_x64_plat_windows()
 end
 
 -- Run the demonstration

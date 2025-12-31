@@ -144,6 +144,57 @@ function Triplet:new(triplet_str)
     return instance
 end
 
+function Triplet:from_xmake(arch, plat)
+    local instance = {arch = nil, vendor = nil, platform = nil, abi = nil}
+    setmetatable(instance, Triplet)
+
+    local xmake_arch = {
+        x64 = "x86_64",
+        x86_64 = "x86_64",
+        x86 = "i686",
+        i386 = "i686",
+        i486 = "i686",
+        i586 = "i686",
+        i686 = "i686",
+        arm64 = "aarch64",
+        arm64ec = "aarch64",
+        ["arm64-v8a"] = "aarch64",
+        aarch64 = "aarch64",
+        arm = "arm",
+        armv7 = "arm",
+        armv7s = "arm",
+        loong64 = "loongarch64",
+        loongarch64 = "loongarch64",
+        wasm32 = "wasm32",
+    }
+
+    if plat == "mingw" or plat == "msys" then
+        instance.arch = xmake_arch[arch]
+        instance.vendor = "w64"
+        instance.platform = "windows"
+        instance.abi = "gnu"
+    elseif plat == "windows" then
+        instance.arch = xmake_arch[arch]
+        instance.vendor = "unknown"
+        instance.platform = "windows"
+        instance.abi = "msvc"
+    elseif plat == "linux" then
+        instance.arch = xmake_arch[arch]
+        instance.vendor = "unknown"
+        instance.platform = "linux"
+        instance.abi = "gnu"
+    elseif plat == "macosx" then
+        instance.arch = xmake_arch[arch]
+        instance.vendor = "apple"
+        instance.platform = "darwin24"
+        instance.abi = nil
+    else
+        error("Unknown platform: " .. plat)
+    end
+
+    return instance
+end
+
 --- Get architecture information
 -- @treturn string Architecture type
 function Triplet:get_arch() return self.arch end
