@@ -15,6 +15,7 @@ Triplet.__name__ = "Triplet"
 -- Known ABI identifiers to help disambiguate 3-part triplets
 local KNOWN_ABIS = {
     gnu = true,
+    gnueabi = true,
     musl = true,
     gnueabihf = true,
     msvc = true,
@@ -34,7 +35,8 @@ local KNOWN_ARCHES = {
     arm64 = true,
     arm = true,
     armv7 = true,
-    loongarch64 = true
+    loongarch64 = true,
+    wasm32 = true
 }
 
 local function is_valid_abi(abi)

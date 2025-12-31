@@ -285,6 +285,76 @@ local function test_aarch64_windows_msvc()
     assert_to_string_without_vendor(triplet, "aarch64-windows-msvc")
 end
 
+local function test_x86_64_linux_musl()
+    local triplet = Triplet:new("x86_64-linux-musl")
+    assert_arch(triplet, "x86_64")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "musl")
+    assert_to_string(triplet, "x86_64-unknown-linux-musl")
+    assert_to_string_without_vendor(triplet, "x86_64-linux-musl")
+end
+
+local function test_arm_linux_gnueabi()
+    local triplet = Triplet:new("arm-linux-gnueabi")
+    assert_arch(triplet, "arm")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnueabi")
+    assert_to_string(triplet, "arm-unknown-linux-gnueabi")
+    assert_to_string_without_vendor(triplet, "arm-linux-gnueabi")
+end
+
+local function test_arm_linux_gnueabihf()
+    local triplet = Triplet:new("arm-linux-gnueabihf")
+    assert_arch(triplet, "arm")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnueabihf")
+    assert_to_string(triplet, "arm-unknown-linux-gnueabihf")
+    assert_to_string_without_vendor(triplet, "arm-linux-gnueabihf")
+end
+
+local function test_wasm32_wasip1()
+    local triplet = Triplet:new("wasm32-wasip1")
+    assert_arch(triplet, "wasm32")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "wasip1")
+    assert_abi(triplet, nil)
+    assert_to_string(triplet, "wasm32-unknown-wasip1")
+    assert_to_string_without_vendor(triplet, "wasm32-wasip1")
+end
+
+local function test_wasm32_unknown_wasip1()
+    local triplet = Triplet:new("wasm32-unknown-wasip1")
+    assert_arch(triplet, "wasm32")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "wasip1")
+    assert_abi(triplet, nil)
+    assert_to_string(triplet, "wasm32-unknown-wasip1")
+    assert_to_string_without_vendor(triplet, "wasm32-wasip1")
+end
+
+local function test_wasm32_emscripten()
+    local triplet = Triplet:new("wasm32-emscripten")
+    assert_arch(triplet, "wasm32")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "emscripten")
+    assert_abi(triplet, nil)
+    assert_to_string(triplet, "wasm32-unknown-emscripten")
+    assert_to_string_without_vendor(triplet, "wasm32-emscripten")
+end
+
+local function test_wasm32_unknown_emscripten()
+    local triplet = Triplet:new("wasm32-unknown-emscripten")
+    assert_arch(triplet, "wasm32")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "emscripten")
+    assert_abi(triplet, nil)
+    assert_to_string(triplet, "wasm32-unknown-emscripten")
+    assert_to_string_without_vendor(triplet, "wasm32-emscripten")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu()
@@ -314,6 +384,13 @@ local function main()
     test_i686_windows_msvc()
     test_aarch64_pc_windows_msvc()
     test_aarch64_windows_msvc()
+    test_x86_64_linux_musl()
+    test_arm_linux_gnueabi()
+    test_arm_linux_gnueabihf()
+    test_wasm32_wasip1()
+    test_wasm32_unknown_wasip1()
+    test_wasm32_emscripten()
+    test_wasm32_unknown_emscripten()
 end
 
 -- Run the demonstration
