@@ -21,6 +21,26 @@ local function test_x86_64_pc_linux_gnu_2()
            "Triplet string should be x86_64-unknown-linux-gnu")
 end
 
+local function test_x86_64_xxx_linux_gnu()
+    local triplet = Triplet:new("x86_64-xxx-linux-gnu")
+    assert(triplet:get_arch() == "x86_64", "Arch should be x86_64")
+    assert(triplet:get_vendor() == "xxx", "Vendor should be xxx")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "gnu", "ABI should be gnu")
+    assert(triplet:to_string() == "x86_64-xxx-linux-gnu",
+           "Triplet string should be x86_64-xxx-linux-gnu")
+end
+
+local function test_x86_64_ubuntu2004_linux_gnu()
+    local triplet = Triplet:new("x86_64-ubuntu2004-linux-gnu")
+    assert(triplet:get_arch() == "x86_64", "Arch should be x86_64")
+    assert(triplet:get_vendor() == "ubuntu2004", "Vendor should be ubuntu2004")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "gnu", "ABI should be gnu")
+    assert(triplet:to_string() == "x86_64-ubuntu2004-linux-gnu",
+           "Triplet string should be x86_64-ubuntu2004-linux-gnu")
+end
+
 local function test_invalid_triplet_1()
     local has_value, value =
         pcall(function() Triplet:new("x86_64-pc-linux") end)
@@ -57,14 +77,34 @@ local function test_aarch64_apple_darwin24()
            "Triplet string should be aarch64-apple-darwin24")
 end
 
+local function test_aarch64_darwin24()
+    local triplet = Triplet:new("aarch64-darwin24")
+    assert(triplet:get_arch() == "aarch64", "Arch should be aarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "darwin24", "Platform should be darwin24")
+    assert(triplet:get_abi() == nil, "ABI should be nil")
+    assert(triplet:to_string() == "aarch64-unknown-darwin24",
+           "Triplet string should be aarch64-unknown-darwin24")
+end
+
+local function test_invalid_triplet_2()
+    local has_value, value =
+        pcall(function() Triplet:new("x86_64-pc-gnu") end)
+    assert(has_value == false, "Should throw error")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu_1()
     test_x86_64_pc_linux_gnu_2()
+    test_x86_64_xxx_linux_gnu()
+    test_x86_64_ubuntu2004_linux_gnu()
     test_invalid_triplet_1()
     test_x86_64_windows_gnu_1()
     test_x86_64_windows_gnu_2()
     test_aarch64_apple_darwin24()
+    test_aarch64_darwin24()
+    test_invalid_triplet_2();
 end
 
 -- Run the demonstration

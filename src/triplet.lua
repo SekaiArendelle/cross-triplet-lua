@@ -12,6 +12,24 @@ local Triplet = {}
 Triplet.__index = Triplet -- This is crucial for method lookup
 Triplet.__name__ = "Triplet"
 
+-- Known ABI identifiers to help disambiguate 3-part triplets
+local KNOWN_ABIS = {
+    gnu = true,
+    musl = true,
+    gnueabihf = true,
+    msvc = true
+}
+
+-- Common vendor identifiers to reject when vendor is explicitly present
+-- but ABI is also present in a 3-part triplet (which should mean vendor
+-- was omitted, not provided).
+local KNOWN_VENDORS = {
+    pc = true,
+    w64 = true,
+    apple = true,
+    unknown = true
+}
+
 -- Known triplet patterns lookup table
 -- Maps input string to normalized components
 local KNOWN_TRIPLETS = {
@@ -146,7 +164,44 @@ function Triplet:new(triplet_str)
 
     -- Look up the triplet in our known patterns table
     local pattern = KNOWN_TRIPLETS[triplet_str]
-    if not pattern then error("Unknown triplet format: " .. triplet_str) end
+    if not pattern then
+        -- Fallback parsing to support custom or vendor-less triplets
+        local parts = {}
+        for part in string.gmatch(triplet_str, "([^%-]+)") do
+            parts[#parts + 1] = part
+        end
+
+        if #parts == 4 then
+            pattern = {
+                arch = parts[1],
+                vendor = parts[2],
+                platform = parts[3],
+                abi = parts[4]
+            }
+        elseif #parts == 3 then
+            -- Only accept 3-part inputs when the tail is a known ABI
+            -- (i.e., vendor is omitted). Otherwise, treat as invalid to
+            -- avoid silently accepting malformed triplets like x86_64-pc-linux.
+            if (not KNOWN_ABIS[parts[3]]) or KNOWN_VENDORS[parts[2]] then
+                error("Unknown triplet format: " .. triplet_str)
+            end
+            pattern = {
+                arch = parts[1],
+                vendor = "unknown",
+                platform = parts[2],
+                abi = parts[3]
+            }
+        elseif #parts == 2 then
+            pattern = {
+                arch = parts[1],
+                vendor = "unknown",
+                platform = parts[2],
+                abi = nil
+            }
+        else
+            error("Unknown triplet format: " .. triplet_str)
+        end
+    end
 
     -- Copy the pattern data to instance
     instance.arch = pattern.arch
