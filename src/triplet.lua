@@ -77,7 +77,7 @@ function Triplet:new(triplet_str)
                 platform = parts[3],
                 abi = nil
             }
-            elseif is_valid_abi(parts[3]) then
+        elseif is_valid_abi(parts[3]) then
             -- Only accept 3-part inputs with ABI when vendor is omitted
             if KNOWN_VENDORS[parts[2]] then
                 error("Unknown triplet format: " .. triplet_str)
@@ -89,10 +89,10 @@ function Triplet:new(triplet_str)
                 abi = parts[3]
             }
         else
-                -- Treat as explicit vendor + platform without ABI
-                if parts[2] == "pc" or parts[2] == "w64" then
-                    error("Unknown triplet format: " .. triplet_str)
-                end
+            -- Treat as explicit vendor + platform without ABI
+            if parts[2] == "pc" or parts[2] == "w64" then
+                error("Unknown triplet format: " .. triplet_str)
+            end
             pattern = {
                 arch = parts[1],
                 vendor = parts[2],

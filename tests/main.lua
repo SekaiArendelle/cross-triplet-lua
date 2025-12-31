@@ -182,6 +182,16 @@ local function test_x86_64_linux_android()
            "Triplet string should be x86_64-unknown-linux-android")
 end
 
+local function test_loongarch64_linux_gnu()
+    local triplet = Triplet:new("loongarch64-linux-gnu")
+    assert(triplet:get_arch() == "loongarch64", "Arch should be loongarch64")
+    assert(triplet:get_vendor() == "unknown", "Vendor should be unknown")
+    assert(triplet:get_platform() == "linux", "Platform should be linux")
+    assert(triplet:get_abi() == "gnu", "ABI should be gnu")
+    assert(triplet:to_string() == "loongarch64-unknown-linux-gnu",
+           "Triplet string should be loongarch64-unknown-linux-gnu")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu_1()
@@ -203,6 +213,7 @@ local function main()
     test_aarch64_linux_android30()
     test_x86_64_linux_android30()
     test_x86_64_linux_android()
+    test_loongarch64_linux_gnu()
 end
 
 -- Run the demonstration
