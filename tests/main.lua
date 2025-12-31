@@ -192,6 +192,11 @@ local function test_loongarch64_linux_gnu()
            "Triplet string should be loongarch64-unknown-linux-gnu")
 end
 
+local function test_invalid_triplet_3()
+    local has_value, value = pcall(function() Triplet:new("xxx-linux-gnu") end)
+    assert(has_value == false, "Should throw error")
+end
+
 --- Main demonstration function
 local function main()
     test_x86_64_pc_linux_gnu_1()
@@ -214,6 +219,7 @@ local function main()
     test_x86_64_linux_android30()
     test_x86_64_linux_android()
     test_loongarch64_linux_gnu()
+    test_invalid_triplet_3()
 end
 
 -- Run the demonstration

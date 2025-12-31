@@ -26,6 +26,17 @@ local KNOWN_ABIS = {
 -- was omitted, not provided).
 local KNOWN_VENDORS = {pc = true, w64 = true, apple = true, unknown = true}
 
+-- Known architectures to avoid accepting arbitrary strings as arch
+local KNOWN_ARCHES = {
+    x86_64 = true,
+    i686 = true,
+    aarch64 = true,
+    arm64 = true,
+    arm = true,
+    armv7 = true,
+    loongarch64 = true
+}
+
 local function is_valid_abi(abi)
     if KNOWN_ABIS[abi] then
         return true
@@ -51,6 +62,10 @@ function Triplet:new(triplet_str)
     local parts = {}
     for part in string.gmatch(triplet_str, "([^%-]+)") do
         parts[#parts + 1] = part
+    end
+
+    if not KNOWN_ARCHES[parts[1]] then
+        error("Unknown triplet format: " .. triplet_str)
     end
 
     local pattern = nil
