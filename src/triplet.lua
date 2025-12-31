@@ -27,16 +27,19 @@ local KNOWN_ABIS = {
 -- was omitted, not provided).
 local KNOWN_VENDORS = {pc = true, w64 = true, apple = true, unknown = true}
 
--- Known architectures to avoid accepting arbitrary strings as arch
+-- Known architectures mapped to their normalized form
 local KNOWN_ARCHES = {
-    x86_64 = true,
-    i686 = true,
-    aarch64 = true,
-    arm64 = true,
-    arm = true,
-    armv7 = true,
-    loongarch64 = true,
-    wasm32 = true
+    x86_64 = "x86_64",
+    i386 = "i686", -- normalize older x86 naming
+    i486 = "i686",
+    i586 = "i686",
+    i686 = "i686",
+    aarch64 = "aarch64",
+    arm64 = "arm64",
+    arm = "arm",
+    armv7 = "armv7",
+    loongarch64 = "loongarch64",
+    wasm32 = "wasm32"
 }
 
 local function is_valid_abi(abi)
@@ -66,14 +69,16 @@ function Triplet:new(triplet_str)
         parts[#parts + 1] = part
     end
 
-    if not KNOWN_ARCHES[parts[1]] then
+    -- Normalize arch before validation
+    local arch = KNOWN_ARCHES[parts[1]]
+    if not arch then
         error("Unknown triplet format: " .. triplet_str)
     end
 
     local pattern = nil
     if #parts == 4 then
         pattern = {
-            arch = parts[1],
+            arch = arch,
             vendor = parts[2],
             platform = parts[3],
             abi = parts[4]
@@ -100,7 +105,7 @@ function Triplet:new(triplet_str)
                 error("Unknown triplet format: " .. triplet_str)
             end
             pattern = {
-                arch = parts[1],
+                arch = arch,
                 vendor = "unknown",
                 platform = parts[2],
                 abi = parts[3]
@@ -111,7 +116,7 @@ function Triplet:new(triplet_str)
                 error("Unknown triplet format: " .. triplet_str)
             end
             pattern = {
-                arch = parts[1],
+                arch = arch,
                 vendor = parts[2],
                 platform = parts[3],
                 abi = nil
@@ -119,7 +124,7 @@ function Triplet:new(triplet_str)
         end
     elseif #parts == 2 then
         pattern = {
-            arch = parts[1],
+            arch = arch,
             vendor = "unknown",
             platform = parts[2],
             abi = nil

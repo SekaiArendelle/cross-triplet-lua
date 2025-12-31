@@ -220,6 +220,47 @@ local function test_loongarch64_linux_gnu()
     assert_to_string_without_vendor(triplet, "loongarch64-linux-gnu")
 end
 
+-- versions earlier than i686 is handled as i686
+local function test_i386_linux_gnu()
+    local triplet = Triplet:new("i386-linux-gnu")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnu")
+    assert_to_string(triplet, "i686-unknown-linux-gnu")
+    assert_to_string_without_vendor(triplet, "i686-linux-gnu")
+end
+
+local function test_i486_linux_gnu()
+    local triplet = Triplet:new("i486-linux-gnu")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnu")
+    assert_to_string(triplet, "i686-unknown-linux-gnu")
+    assert_to_string_without_vendor(triplet, "i686-linux-gnu")
+end
+
+local function test_i586_linux_gnu()
+    local triplet = Triplet:new("i586-linux-gnu")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnu")
+    assert_to_string(triplet, "i686-unknown-linux-gnu")
+    assert_to_string_without_vendor(triplet, "i686-linux-gnu")
+end
+
+local function test_i686_linux_gnu()
+    local triplet = Triplet:new("i686-linux-gnu")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "linux")
+    assert_abi(triplet, "gnu")
+    assert_to_string(triplet, "i686-unknown-linux-gnu")
+    assert_to_string_without_vendor(triplet, "i686-linux-gnu")
+end
+
 local function test_invalid_triplet_3()
     local has_value, value = pcall(function() Triplet:new("xxx-linux-gnu") end)
     assert(has_value == false, "Should throw error")
@@ -377,6 +418,10 @@ local function main()
     test_x86_64_linux_android30()
     test_x86_64_linux_android()
     test_loongarch64_linux_gnu()
+    test_i386_linux_gnu()
+    test_i486_linux_gnu()
+    test_i586_linux_gnu()
+    test_i686_linux_gnu()
     test_invalid_triplet_3()
     test_x86_64_pc_windows_msvc()
     test_x86_64_windows_msvc()
