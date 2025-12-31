@@ -29,7 +29,7 @@ local function assert_to_string_without_vendor(triplet, expected)
            "to_string_without_vendor should be " .. expected)
 end
 
-local function test_x86_64_pc_linux_gnu_1()
+local function test_x86_64_pc_linux_gnu()
     local triplet = Triplet:new("x86_64-pc-linux-gnu")
     assert_arch(triplet, "x86_64")
     assert_vendor(triplet, "pc")
@@ -39,7 +39,7 @@ local function test_x86_64_pc_linux_gnu_1()
     assert_to_string_without_vendor(triplet, "x86_64-linux-gnu")
 end
 
-local function test_x86_64_pc_linux_gnu_2()
+local function test_x86_64_linux_gnu()
     local triplet = Triplet:new("x86_64-linux-gnu")
     assert_arch(triplet, "x86_64")
     assert_vendor(triplet, "unknown")
@@ -75,7 +75,7 @@ local function test_invalid_triplet_1()
     assert(has_value == false, "Should throw error")
 end
 
-local function test_x86_64_windows_gnu_1()
+local function test_x86_64_w64_mingw32()
     local triplet = Triplet:new("x86_64-w64-mingw32")
     assert_arch(triplet, "x86_64")
     assert_vendor(triplet, "w64")
@@ -85,7 +85,7 @@ local function test_x86_64_windows_gnu_1()
     assert_to_string_without_vendor(triplet, "x86_64-windows-gnu")
 end
 
-local function test_x86_64_windows_gnu_2()
+local function test_x86_64_windows_gnu()
     local triplet = Triplet:new("x86_64-windows-gnu")
     assert_arch(triplet, "x86_64")
     assert_vendor(triplet, "unknown")
@@ -225,15 +225,75 @@ local function test_invalid_triplet_3()
     assert(has_value == false, "Should throw error")
 end
 
+local function test_x86_64_pc_windows_msvc()
+    local triplet = Triplet:new("x86_64-pc-windows-msvc")
+    assert_arch(triplet, "x86_64")
+    assert_vendor(triplet, "pc")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "x86_64-pc-windows-msvc")
+    assert_to_string_without_vendor(triplet, "x86_64-windows-msvc")
+end
+
+local function test_x86_64_windows_msvc()
+    local triplet = Triplet:new("x86_64-windows-msvc")
+    assert_arch(triplet, "x86_64")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "x86_64-unknown-windows-msvc")
+    assert_to_string_without_vendor(triplet, "x86_64-windows-msvc")
+end
+
+local function test_i686_pc_windows_msvc()
+    local triplet = Triplet:new("i686-pc-windows-msvc")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "pc")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "i686-pc-windows-msvc")
+    assert_to_string_without_vendor(triplet, "i686-windows-msvc")
+end
+
+local function test_i686_windows_msvc()
+    local triplet = Triplet:new("i686-windows-msvc")
+    assert_arch(triplet, "i686")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "i686-unknown-windows-msvc")
+    assert_to_string_without_vendor(triplet, "i686-windows-msvc")
+end
+
+local function test_aarch64_pc_windows_msvc()
+    local triplet = Triplet:new("aarch64-pc-windows-msvc")
+    assert_arch(triplet, "aarch64")
+    assert_vendor(triplet, "pc")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "aarch64-pc-windows-msvc")
+    assert_to_string_without_vendor(triplet, "aarch64-windows-msvc")
+end
+
+local function test_aarch64_windows_msvc()
+    local triplet = Triplet:new("aarch64-windows-msvc")
+    assert_arch(triplet, "aarch64")
+    assert_vendor(triplet, "unknown")
+    assert_platform(triplet, "windows")
+    assert_abi(triplet, "msvc")
+    assert_to_string(triplet, "aarch64-unknown-windows-msvc")
+    assert_to_string_without_vendor(triplet, "aarch64-windows-msvc")
+end
+
 --- Main demonstration function
 local function main()
-    test_x86_64_pc_linux_gnu_1()
-    test_x86_64_pc_linux_gnu_2()
+    test_x86_64_pc_linux_gnu()
+    test_x86_64_linux_gnu()
     test_x86_64_xxx_linux_gnu()
     test_x86_64_ubuntu2004_linux_gnu()
     test_invalid_triplet_1()
-    test_x86_64_windows_gnu_1()
-    test_x86_64_windows_gnu_2()
+    test_x86_64_w64_mingw32()
+    test_x86_64_windows_gnu()
     test_aarch64_apple_darwin24()
     test_aarch64_darwin24()
     test_aarch64_apple_darwin()
@@ -248,6 +308,12 @@ local function main()
     test_x86_64_linux_android()
     test_loongarch64_linux_gnu()
     test_invalid_triplet_3()
+    test_x86_64_pc_windows_msvc()
+    test_x86_64_windows_msvc()
+    test_i686_pc_windows_msvc()
+    test_i686_windows_msvc()
+    test_aarch64_pc_windows_msvc()
+    test_aarch64_windows_msvc()
 end
 
 -- Run the demonstration
