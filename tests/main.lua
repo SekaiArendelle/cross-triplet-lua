@@ -88,8 +88,7 @@ local function test_aarch64_darwin24()
 end
 
 local function test_invalid_triplet_2()
-    local has_value, value =
-        pcall(function() Triplet:new("x86_64-pc-gnu") end)
+    local has_value, value = pcall(function() Triplet:new("x86_64-pc-gnu") end)
     assert(has_value == false, "Should throw error")
 end
 

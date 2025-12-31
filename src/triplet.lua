@@ -13,145 +13,12 @@ Triplet.__index = Triplet -- This is crucial for method lookup
 Triplet.__name__ = "Triplet"
 
 -- Known ABI identifiers to help disambiguate 3-part triplets
-local KNOWN_ABIS = {
-    gnu = true,
-    musl = true,
-    gnueabihf = true,
-    msvc = true
-}
+local KNOWN_ABIS = {gnu = true, musl = true, gnueabihf = true, msvc = true}
 
 -- Common vendor identifiers to reject when vendor is explicitly present
 -- but ABI is also present in a 3-part triplet (which should mean vendor
 -- was omitted, not provided).
-local KNOWN_VENDORS = {
-    pc = true,
-    w64 = true,
-    apple = true,
-    unknown = true
-}
-
--- Known triplet patterns lookup table
--- Maps input string to normalized components
-local KNOWN_TRIPLETS = {
-    -- Standard 4-part formats
-    ["x86_64-pc-linux-gnu"] = {
-        arch = "x86_64",
-        vendor = "pc",
-        platform = "linux",
-        abi = "gnu"
-    },
-    ["x86_64-w64-mingw32"] = {
-        arch = "x86_64",
-        vendor = "w64",
-        platform = "windows",
-        abi = "gnu"
-    },
-    ["i686-w64-mingw32"] = {
-        arch = "i686",
-        vendor = "w64",
-        platform = "windows",
-        abi = "gnu"
-    },
-    ["x86_64-pc-windows-gnu"] = {
-        arch = "x86_64",
-        vendor = "pc",
-        platform = "windows",
-        abi = "gnu"
-    },
-    -- 3-part formats (missing vendor)
-    ["x86_64-linux-gnu"] = {
-        arch = "x86_64",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "gnu"
-    },
-    ["x86_64-windows-gnu"] = {
-        arch = "x86_64",
-        vendor = "unknown",
-        platform = "windows",
-        abi = "gnu"
-    },
-    ["i686-windows-gnu"] = {
-        arch = "i686",
-        vendor = "unknown",
-        platform = "windows",
-        abi = "gnu"
-    },
-    ["x86_64-linux-musl"] = {
-        arch = "x86_64",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "musl"
-    },
-    ["arm-linux-gnueabihf"] = {
-        arch = "arm",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "gnueabihf"
-    },
-    ["aarch64-linux-gnu"] = {
-        arch = "aarch64",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "gnu"
-    },
-    ["i686-linux-gnu"] = {
-        arch = "i686",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "gnu"
-    },
-
-    -- 3-part formats (missing abi)
-    ["x86_64-apple-darwin"] = {
-        arch = "x86_64",
-        vendor = "apple",
-        platform = "darwin",
-        abi = nil
-    },
-    ["aarch64-apple-darwin"] = {
-        arch = "aarch64",
-        vendor = "apple",
-        platform = "darwin",
-        abi = nil
-    },
-    ["arm64-apple-darwin"] = {
-        arch = "arm64",
-        vendor = "apple",
-        platform = "darwin",
-        abi = nil
-    },
-    ["arm-apple-darwin"] = {
-        arch = "arm",
-        vendor = "apple",
-        platform = "darwin",
-        abi = nil
-    },
-    ["aarch64-apple-darwin24"] = {
-        arch = "aarch64",
-        vendor = "apple",
-        platform = "darwin24",
-        abi = nil
-    },
-    ["arm64-apple-darwin24"] = {
-        arch = "arm64",
-        vendor = "apple",
-        platform = "darwin24",
-        abi = nil
-    },
-    ["x86_64-apple-darwin24"] = {
-        arch = "x86_64",
-        vendor = "apple",
-        platform = "darwin24",
-        abi = nil
-    },
-    ["armv7-linux-gnueabihf"] = {
-        arch = "armv7",
-        vendor = "unknown",
-        platform = "linux",
-        abi = "gnueabihf"
-    }
-}
+local KNOWN_VENDORS = {pc = true, w64 = true, apple = true, unknown = true}
 
 --- Create a new Triplet instance
 -- Parse triplet string and create corresponding Triplet object using lookup table
@@ -163,26 +30,38 @@ function Triplet:new(triplet_str)
     setmetatable(instance, Triplet)
 
     -- Look up the triplet in our known patterns table
-    local pattern = KNOWN_TRIPLETS[triplet_str]
-    if not pattern then
-        -- Fallback parsing to support custom or vendor-less triplets
-        local parts = {}
-        for part in string.gmatch(triplet_str, "([^%-]+)") do
-            parts[#parts + 1] = part
-        end
+    -- Fallback parsing to support custom or vendor-less triplets
+    local parts = {}
+    for part in string.gmatch(triplet_str, "([^%-]+)") do
+        parts[#parts + 1] = part
+    end
 
-        if #parts == 4 then
+    if #parts == 4 then
+        pattern = {
+            arch = parts[1],
+            vendor = parts[2],
+            platform = parts[3],
+            abi = parts[4]
+        }
+    elseif #parts == 3 then
+        -- Handle common vendor/platform aliases before generic parsing
+        if parts[2] == "w64" and parts[3] == "mingw32" then
             pattern = {
                 arch = parts[1],
-                vendor = parts[2],
-                platform = parts[3],
-                abi = parts[4]
+                vendor = "w64",
+                platform = "windows",
+                abi = "gnu"
             }
-        elseif #parts == 3 then
-            -- Only accept 3-part inputs when the tail is a known ABI
-            -- (i.e., vendor is omitted). Otherwise, treat as invalid to
-            -- avoid silently accepting malformed triplets like x86_64-pc-linux.
-            if (not KNOWN_ABIS[parts[3]]) or KNOWN_VENDORS[parts[2]] then
+        elseif parts[2] == "apple" then
+            pattern = {
+                arch = parts[1],
+                vendor = "apple",
+                platform = parts[3],
+                abi = nil
+            }
+        elseif KNOWN_ABIS[parts[3]] then
+            -- Only accept 3-part inputs with ABI when vendor is omitted
+            if KNOWN_VENDORS[parts[2]] then
                 error("Unknown triplet format: " .. triplet_str)
             end
             pattern = {
@@ -191,16 +70,27 @@ function Triplet:new(triplet_str)
                 platform = parts[2],
                 abi = parts[3]
             }
-        elseif #parts == 2 then
+        elseif KNOWN_VENDORS[parts[2]] then
+            -- Vendor explicitly present but ABI missing for a known vendor
+            error("Unknown triplet format: " .. triplet_str)
+        else
+            -- Treat as explicit vendor + platform without ABI
             pattern = {
                 arch = parts[1],
-                vendor = "unknown",
-                platform = parts[2],
+                vendor = parts[2],
+                platform = parts[3],
                 abi = nil
             }
-        else
-            error("Unknown triplet format: " .. triplet_str)
         end
+    elseif #parts == 2 then
+        pattern = {
+            arch = parts[1],
+            vendor = "unknown",
+            platform = parts[2],
+            abi = nil
+        }
+    else
+        error("Unknown triplet format: " .. triplet_str)
     end
 
     -- Copy the pattern data to instance
